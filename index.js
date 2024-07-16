@@ -21,18 +21,15 @@ document.onreadystatechange = () => {
       });
 
       // build file content map
-      const virtualFiles = Object.fromEntries(
-        [...document.querySelectorAll(`script[type="text/babel"]`)].map((s) => [s.getAttribute("data-path"), s.textContent])
-      );
-
-      const result = await esbuild.transform(virtualFiles["main.ts"], { loader: "tsx" });
-      const sourceScript = document.querySelector(`script[data-path="main.ts"]`);
-      const transpiledScript = document.createElement("script");
-      transpiledScript.textContent = result.code;
-      transpiledScript.type = "module";
-
-      document.head.appendChild(importMapsScript);
-      sourceScript.insertAdjacentElement("afterend", transpiledScript);
+      const sourceScripts = document.querySelectorAll(`script[type="text/babel"]`);
+      sourceScripts.forEach(async (sourceScript) => {
+        const result = await esbuild.transform(sourceScript.textContent, { loader: "tsx" });
+        const transpiledScript = document.createElement("script");
+        transpiledScript.textContent = result.code;
+        transpiledScript.type = "module";
+        sourceScript.insertAdjacentElement("afterend", transpiledScript);
+        sourceScript.remove();
+      });
     });
   }
 };
