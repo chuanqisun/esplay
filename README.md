@@ -1,6 +1,9 @@
 # ESPlay
 
-Import any npm package into the browser without build tools.
+Turn browser into a buildless prototyping environment. Works with:
+
+- React
+- TypeScript/TSX/JSX
 
 ## Quickstart
 
@@ -38,3 +41,15 @@ Import any npm package into the browser without build tools.
   </body>
 </html>
 ```
+
+## Examples
+
+- [Pomodoro Timer](./examples/pomodoro.html): React + Ant Design
+
+## Caveats
+
+The following issues are under investigation. Suggestions are welcome.
+
+- No dynamic import `import(...)`
+- No relative file import `import './MyComponent`
+- No Source map
