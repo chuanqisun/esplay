@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document Explorer with Word Cloud</title>
-  <script src="./index.js"></script>
+  <script src="https://unpkg.com/esplay" crossorigin></script>
 </head>
 
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    import * as React from "react";
+    import React, { useEffect, useState } from "react";
     import { createRoot } from "react-dom/client";
     import { Button, Typography, Space } from 'antd';
 
@@ -21,11 +21,11 @@
     const BREAK_TIME = 5 * 60; // 5 minutes in seconds
 
     function App() {
-      const [time, setTime] = React.useState(WORK_TIME);
-      const [isRunning, setIsRunning] = React.useState(false);
-      const [isWorkSession, setIsWorkSession] = React.useState(true);
+      const [time, setTime] = useState(WORK_TIME);
+      const [isRunning, setIsRunning] = useState(false);
+      const [isWorkSession, setIsWorkSession] = useState(true);
 
-      React.useEffect(() => {
+      useEffect(() => {
         let timer;
         if (isRunning) {
           timer = setInterval(() => {

@@ -16,7 +16,7 @@ Think before you implement. Response in this format:
 
 <thoughts>Reason about user's instructions</thoughts>
 <implementation type="application/javascript">
-import * as React from "react";
+import React, { useState, useEffect, ... } from "react";
 import { createRoot } from "react-dom/client";
 
 function App() {
