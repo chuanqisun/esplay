@@ -45,6 +45,7 @@ Turn browser into a buildless prototyping environment. Works with:
 ## Examples
 
 - [Pomodoro Timer](./examples/pomodoro.html): React + Ant Design
+- [Contact book](./examples/contact-book.html): React + MUI
 
 ## Caveats
 

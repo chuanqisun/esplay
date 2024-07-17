@@ -10,6 +10,7 @@ document.onreadystatechange = () => {
       ...Object.fromEntries(importFroms.map((from) => [from, `https://esm.sh/${from}?external=react`])),
       react: "https://esm.sh/react",
       "react-dom/client": "https://esm.sh/react-dom/client",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime",
     };
 
     console.log(`[esplay]`, { imports });
