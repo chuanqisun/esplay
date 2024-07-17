@@ -6,7 +6,11 @@ document.onreadystatechange = () => {
 
     const importMatches = [...babelText.matchAll(importFromPattern)];
     const importFroms = importMatches.map((m) => m[2]);
-    const imports = Object.fromEntries(importFroms.map((from) => [from, `https://esm.sh/${from}?external=react`]));
+    const imports = {
+      ...Object.fromEntries(importFroms.map((from) => [from, `https://esm.sh/${from}?external=react`])),
+      react: "https://esm.sh/react",
+      "react-dom/client": "https://esm.sh/react-dom/client",
+    };
 
     console.log(`[esplay]`, { imports });
     const importMapsScript = document.createElement("script");
