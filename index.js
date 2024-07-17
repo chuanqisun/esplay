@@ -2,10 +2,10 @@ document.onreadystatechange = () => {
   if (document.readyState === "complete") {
     // setup import map
     const babelText = document.querySelector("script[type='text/babel']").textContent;
-    const importFromPattern = /^\s*import(.+)from\s+['"](.+)['"]/gm;
+    const importFromPattern = /^\s*import(?:.|\n)*?(?:from)?\s+['"](.+)['"]/gm;
 
     const importMatches = [...babelText.matchAll(importFromPattern)];
-    const importFroms = importMatches.map((m) => m[2]);
+    const importFroms = importMatches.map((m) => m[1]);
     const imports = {
       ...Object.fromEntries(importFroms.map((from) => [from, `https://esm.sh/${from}?external=react`])),
       react: "https://esm.sh/react",
