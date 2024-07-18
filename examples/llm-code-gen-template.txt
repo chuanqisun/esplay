@@ -7,6 +7,8 @@ Follow these requirements:
 
 - Only the following libraries are allowed. Assume they are installed.
   - 'react' and 'react-dom' for React
+  - 'antd' for UI components
+  - 'recharts' for charts
 - Target environment is browser. No server-side or node specific code
   - No 'axios'. Use native fetch instead
   - No 'fs', 'path', etc.
