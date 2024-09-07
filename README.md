@@ -14,6 +14,13 @@ Turn browser into a buildless prototyping environment. Works with:
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ESPlay Demo</title>
+    <link rel="preconnect" href="https://esm.sh" />
+    <script id="dependencies" type="application/json">
+      {
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1?bundle-deps"
+      }
+    </script>
     <script src="https://unpkg.com/esplay" crossorigin></script>
   </head>
   <body>
