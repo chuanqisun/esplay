@@ -26,24 +26,24 @@ Turn browser into a buildless prototyping environment. Works with:
   <body>
     <div id="root"></div>
     <script type="text/babel">
-      import React, { useState } from 'react'
-      import ReactDOM from 'react-dom/client'
+      import React, { useState } from "react";
+      import ReactDOM from "react-dom/client";
 
       function App() {
-        const [count, setCount] = useState(0)
+        const [count, setCount] = useState(0);
         return (
           <div>
             <p>Count: {count}</p>
             <button onClick={() => setCount(count + 1)}>Increment</button>
           </div>
-        )
+        );
       }
 
-      ReactDOM.createRoot(document.getElementById('root')!).render(
+      ReactDOM.createRoot(document.getElementById("root")).render(
         <React.StrictMode>
           <App />
-        </React.StrictMode>,
-      )
+        </React.StrictMode>
+      );
     </script>
   </body>
 </html>
