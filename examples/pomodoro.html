@@ -1,77 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo</title>
+    <script src="https://unpkg.com/esplay" crossorigin></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo</title>
-  <script src="https://unpkg.com/esplay" crossorigin></script>
-</head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      import React, { useEffect, useState } from "react";
+      import { createRoot } from "react-dom/client";
+      import { Button, Typography, Space } from "antd";
 
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    import React, { useEffect, useState } from "react";
-    import { createRoot } from "react-dom/client";
-    import { Button, Typography, Space } from 'antd';
+      const { Title } = Typography;
 
-    const { Title } = Typography;
+      const WORK_TIME = 25 * 60; // 25 minutes in seconds
+      const BREAK_TIME = 5 * 60; // 5 minutes in seconds
 
-    const WORK_TIME = 25 * 60; // 25 minutes in seconds
-    const BREAK_TIME = 5 * 60; // 5 minutes in seconds
+      function App() {
+        const [time, setTime] = useState(WORK_TIME);
+        const [isRunning, setIsRunning] = useState(false);
+        const [isWorkSession, setIsWorkSession] = useState(true);
 
-    function App() {
-      const [time, setTime] = useState(WORK_TIME);
-      const [isRunning, setIsRunning] = useState(false);
-      const [isWorkSession, setIsWorkSession] = useState(true);
+        useEffect(() => {
+          let timer;
+          if (isRunning) {
+            timer = setInterval(() => {
+              setTime((prevTime) => {
+                if (prevTime === 1) {
+                  setIsWorkSession(!isWorkSession);
+                  return isWorkSession ? BREAK_TIME : WORK_TIME;
+                }
+                return prevTime - 1;
+              });
+            }, 1000);
+          }
+          return () => clearInterval(timer);
+        }, [isRunning, isWorkSession]);
 
-      useEffect(() => {
-        let timer;
-        if (isRunning) {
-          timer = setInterval(() => {
-            setTime(prevTime => {
-              if (prevTime === 1) {
-                setIsWorkSession(!isWorkSession);
-                return isWorkSession ? BREAK_TIME : WORK_TIME;
-              }
-              return prevTime - 1;
-            });
-          }, 1000);
-        }
-        return () => clearInterval(timer);
-      }, [isRunning, isWorkSession]);
+        const handleStartPause = () => {
+          setIsRunning(!isRunning);
+        };
 
-      const handleStartPause = () => {
-        setIsRunning(!isRunning);
-      };
+        const handleReset = () => {
+          setIsRunning(false);
+          setTime(isWorkSession ? WORK_TIME : BREAK_TIME);
+        };
 
-      const handleReset = () => {
-        setIsRunning(false);
-        setTime(isWorkSession ? WORK_TIME : BREAK_TIME);
-      };
+        const formatTime = (seconds) => {
+          const minutes = Math.floor(seconds / 60);
+          const secs = seconds % 60;
+          return `${minutes < 10 ? "0" : ""}${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+        };
 
-      const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-      };
+        return (
+          <div style={{ textAlign: "center", marginTop: "50px" }}>
+            <Title level={2}>{isWorkSession ? "Work Session" : "Break Session"}</Title>
+            <Title level={1}>{formatTime(time)}</Title>
+            <Space>
+              <Button type="primary" onClick={handleStartPause}>
+                {isRunning ? "Pause" : "Start"}
+              </Button>
+              <Button onClick={handleReset}>Reset</Button>
+            </Space>
+          </div>
+        );
+      }
 
-      return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <Title level={2}>{isWorkSession ? 'Work Session' : 'Break Session'}</Title>
-          <Title level={1}>{formatTime(time)}</Title>
-          <Space>
-            <Button type="primary" onClick={handleStartPause}>
-              {isRunning ? 'Pause' : 'Start'}
-            </Button>
-            <Button onClick={handleReset}>Reset</Button>
-          </Space>
-        </div>
-      );
-    }
-
-    createRoot(document.getElementById("root")).render(<App />);
-  </script>
-</body>
-
+      createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
 </html>

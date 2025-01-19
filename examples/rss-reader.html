@@ -1,85 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo</title>
+    <script src="https://unpkg.com/esplay" crossorigin></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo</title>
-  <script src="https://unpkg.com/esplay" crossorigin></script>
-</head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      /** Replace this with your code for dev/test */
 
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    /** Replace this with your code for dev/test */
+      import React, { useState } from "react";
+      import { createRoot } from "react-dom/client";
+      import { from, of } from "rxjs";
+      import { switchMap, catchError } from "rxjs/operators";
 
-    import React, { useState } from "react";
-    import { createRoot } from "react-dom/client";
-    import { from, of } from 'rxjs';
-    import { switchMap, catchError } from 'rxjs/operators';
+      function App() {
+        const [rssUrl, setRssUrl] = useState("https://www.wired.com/feed/rss");
+        const [articles, setArticles] = useState([]);
+        const [error, setError] = useState(null);
 
-    function App() {
-      const [rssUrl, setRssUrl] = useState('https://www.wired.com/feed/rss');
-      const [articles, setArticles] = useState([]);
-      const [error, setError] = useState(null);
+        const fetchRSS = (url) => {
+          return from(fetch(url).then((response) => response.text()));
+        };
 
-      const fetchRSS = (url) => {
-        return from(fetch(url).then(response => response.text()));
-      };
+        const parseRSS = (rssText) => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(rssText, "text/xml");
+          const items = xmlDoc.querySelectorAll("item");
+          const articles = Array.from(items).map((item) => ({
+            title: item.querySelector("title").textContent,
+            link: item.querySelector("link").textContent,
+          }));
+          return articles;
+        };
 
-      const parseRSS = (rssText) => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(rssText, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
-        const articles = Array.from(items).map(item => ({
-          title: item.querySelector("title").textContent,
-          link: item.querySelector("link").textContent
-        }));
-        return articles;
-      };
+        const handleFetch = () => {
+          setError(null);
+          setArticles([]);
+          from(fetchRSS(rssUrl))
+            .pipe(
+              switchMap((response) => of(parseRSS(response))),
+              catchError((err) => {
+                setError("Failed to fetch or parse RSS feed");
+                return of([]);
+              })
+            )
+            .subscribe((articles) => setArticles(articles));
+        };
 
-      const handleFetch = () => {
-        setError(null);
-        setArticles([]);
-        from(fetchRSS(rssUrl))
-          .pipe(
-            switchMap(response => of(parseRSS(response))),
-            catchError(err => {
-              setError('Failed to fetch or parse RSS feed');
-              return of([]);
-            })
-          )
-          .subscribe(articles => setArticles(articles));
-      };
-
-      return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-          <h1>Simple RSS Reader</h1>
-          <div>
-            <label htmlFor="rssUrl" style={{ marginRight: '10px' }}>RSS URL:</label>
-            <input
-              id="rssUrl"
-              type="text"
-              value={rssUrl}
-              onChange={(e) => setRssUrl(e.target.value)}
-              style={{ marginRight: '10px', padding: '5px' }}
-            />
-            <button onClick={handleFetch} style={{ padding: '5px 10px' }}>Fetch</button>
+        return (
+          <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+            <h1>Simple RSS Reader</h1>
+            <div>
+              <label htmlFor="rssUrl" style={{ marginRight: "10px" }}>
+                RSS URL:
+              </label>
+              <input id="rssUrl" type="text" value={rssUrl} onChange={(e) => setRssUrl(e.target.value)} style={{ marginRight: "10px", padding: "5px" }} />
+              <button onClick={handleFetch} style={{ padding: "5px 10px" }}>
+                Fetch
+              </button>
+            </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <ul style={{ marginTop: "20px" }}>
+              {articles.map((article, index) => (
+                <li key={index} style={{ marginBottom: "10px" }}>
+                  <a href={article.link} target="_blank" rel="noopener noreferrer">
+                    {article.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          <ul style={{ marginTop: '20px' }}>
-            {articles.map((article, index) => (
-              <li key={index} style={{ marginBottom: '10px' }}>
-                <a href={article.link} target="_blank" rel="noopener noreferrer">{article.title}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    }
+        );
+      }
 
-    createRoot(document.getElementById("root")).render(<App />);
-  </script>
-</body>
-
+      createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
 </html>
