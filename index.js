@@ -59,8 +59,9 @@ document.onreadystatechange = () => {
 
     // transpile and run
     import("https://esm.sh/esbuild-wasm@0.24.2").then(async (pkg) => {
+      const esbuild = pkg.default;
       performance.mark("esbuild-wasm:imported");
-      await pkg.default.initialize({
+      await esbuild.initialize({
         wasmURL: "https://esm.sh/esbuild-wasm@0.24.2/esbuild.wasm",
       });
 
