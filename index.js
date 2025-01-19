@@ -58,10 +58,10 @@ document.onreadystatechange = () => {
     document.head.appendChild(importMapsScript);
 
     // transpile and run
-    import("https://esm.sh/esbuild-wasm@0.23.1").then(async (esbuild) => {
+    import("https://esm.sh/esbuild-wasm@0.24.2").then(async (pkg) => {
       performance.mark("esbuild-wasm:imported");
-      await esbuild.initialize({
-        wasmURL: "https://esm.sh/esbuild-wasm@0.23.1/esbuild.wasm",
+      await pkg.default.initialize({
+        wasmURL: "https://esm.sh/esbuild-wasm@0.24.2/esbuild.wasm",
       });
 
       safeAppendRootContent("Compiling...");
