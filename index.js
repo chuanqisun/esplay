@@ -36,6 +36,13 @@ document.onreadystatechange = () => {
     const normalizedPackageNamePattern = /^(@[^/]+\/[^/]+|[^/]+)/;
     const normalizedImportEntries = allImportNames.map((name) => {
       const match = name.match(normalizedPackageNamePattern);
+
+      // Do NOT transform external URLs
+      if (!match || match[0].startsWith("https:") || match[0].startsWith("http:")) {
+        safeAppendRootContent(`Skipping transform: ${name}`);
+        return [name, name];
+      }
+
       if (!match) throw new Error(`Invalid package name: ${name}`);
       const packageName = match[1];
       const packageSuffix = name.slice(packageName.length);
