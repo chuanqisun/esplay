@@ -1,3 +1,28 @@
+function observeConsole() {
+  safeAppendRootContent("Observing console...");
+  const methods = ["log", "warn", "error"];
+  const originals = {};
+
+  const tryStringify = (value) => {
+    try {
+      return JSON.stringify(value);
+    } catch (e) {
+      return `[ERROR ${e?.message}]`;
+    }
+  };
+
+  methods.forEach((method) => {
+    originals[method] = console[method];
+    console[method] = function (...args) {
+      const label = method.toUpperCase();
+      const message = args.map((arg) => (typeof arg === "string" ? arg : tryStringify(arg))).join(" ");
+
+      safeAppendRootContent(`[${label}] ${message}`);
+      originals[method].apply(console, args);
+    };
+  });
+}
+
 function safeAppendRootContent(content) {
   const root = document.getElementById("root");
   if (root) {
@@ -73,6 +98,9 @@ document.onreadystatechange = () => {
       });
 
       safeAppendRootContent("Compiling...");
+
+      observeConsole();
+
       // build file content map
       const sourceScripts = document.querySelectorAll(`script[type="text/babel"]`);
       sourceScripts.forEach(async (sourceScript, index) => {
